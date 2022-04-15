@@ -19,7 +19,7 @@ import os
 
 #Importando dependências
 import raizen_extract
-import raizen_transform
+#import raizen_transform
 
 #Funções tasks
 
@@ -28,7 +28,8 @@ def file_raw_extract():
     raizen_extract.extract_xls_origin(path_bronze_zone,file_dest_name)
 
 def trasnform_final():
-    raizen_transform.Dframe_final(path_bronze_zone+'\\'+file_xlsx_name)
+    pass
+    #raizen_transform.Dframe_final(path_bronze_zone+'\\'+file_xlsx_name)
 
 #Construção DAG
 default_args = {
@@ -51,10 +52,10 @@ with DAG(
 
     file_dest_name = 'sales_anp.xls'
     file_xlsx_name = 'sales_anp.xlsx'
-    path_bronze_zone = '/opt/airflow/dags'
-    path_silver_zone = '<Path da Silver_Zone>'
-    path_gold_zone = '<Path da Gold_Zone>'
-
+    path_bronze_zone = '/opt/airflow/dags/data_lake/bronze_zone'
+    path_silver_zone = '/opt/airflow/dags/data_lake/silver_zone'
+    path_gold_zone = '/opt/airflow/dags/data_lake/gold_zone'
+   
     
     extraction_xls_origin = PythonOperator(
         task_id="extraction_xls_origin",
@@ -66,11 +67,12 @@ with DAG(
         image='ipunktbs/docker-libreoffice-headless:latest',
         api_version='auto',
         auto_remove=True,
-        command='libreoffice --invisible --headless --convert-to xlsx /opt/airflow/dags/sales_anp.xls --outdir /opt/airflow/dags/sales_anp.xls',
+        command='libreoffice --invisible --headless --convert-to xlsx "/tmp/*.xls"',
         docker_url="unix:///var/run/docker.sock",
         network_mode="bridge",
-        mount_tmp_dir=False,
-        mounts=[Mount(source=path_bronze_zone,target=path_bronze_zone, type="bind")]
+        mount_tmp_dir=True,
+        tmp_dir='/tmp'
+        #mounts=[Mount(source=path_bronze_zone,target="/tmp", type="bind")]
     )
 
     trasnform_step = PythonOperator(
@@ -80,3 +82,5 @@ with DAG(
 
 extraction_xls_origin >> convertion_file_xls_xlsx
 convertion_file_xls_xlsx >> trasnform_step
+
+
