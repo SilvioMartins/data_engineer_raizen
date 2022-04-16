@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<parametros>
-    <diretorios>
-        <bronze_zone>./data_lake/bronze_zone</bronze_zone>
-        <silver_zone>./data_lake/silver_zone</silver_zone>
-        <gold_zone>./data_lake/gold_zone</gold_zone>
-    </diretorios>
-</parametros>
