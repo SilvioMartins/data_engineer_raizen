@@ -10,7 +10,7 @@ import datetime
 from sys import api_version
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from airflow.operators.docker_operator import DockerOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 from docker.types import Mount
 import pandas as pd
@@ -55,32 +55,27 @@ with DAG(
     path_bronze_zone = '/opt/airflow/dags/data_lake/bronze_zone'
     path_silver_zone = '/opt/airflow/dags/data_lake/silver_zone'
     path_gold_zone = '/opt/airflow/dags/data_lake/gold_zone'
-   
     
     extraction_xls_origin = PythonOperator(
         task_id="extraction_xls_origin",
         python_callable=file_raw_extract
     )
 
-    convertion_file_xls_xlsx = DockerOperator(
+    convertion_file_xls_xlsx = BashOperator(
         task_id='convertion_file_xls_xlsx',
-        image='ipunktbs/docker-libreoffice-headless:latest',
-        api_version='auto',
-        auto_remove=True,
-        command='libreoffice --invisible --headless --convert-to xlsx "/tmp/*.xls"',
-        docker_url="unix:///var/run/docker.sock",
-        network_mode="bridge",
-        mount_tmp_dir=True,
-        tmp_dir='/tmp'
-        #mounts=[Mount(source=path_bronze_zone,target="/tmp", type="bind")]
+        bash_command= (
+            'cp /opt/airflow/dags/data_lake/bronze_zone/sales_anp.xls /tmp && '
+            'docker run --rm -v /tmp:/tmp --name libre-headless ipunktbs/docker-libreoffice-headless:latest --convert-to xlsx "sales_anp.xls" && '
+            'cp /tmp/sales_anp.xlsx  /opt/airflow/dags/data_lake/bronze_zone '
+        )
     )
 
-    trasnform_step = PythonOperator(
+    transform_step = PythonOperator(
         task_id="trasnform_final",
         python_callable=trasnform_final
     )
+    
 
 extraction_xls_origin >> convertion_file_xls_xlsx
-convertion_file_xls_xlsx >> trasnform_step
-
+convertion_file_xls_xlsx >> transform_step
 

@@ -27,11 +27,10 @@ class Base_extraxt:
         return self._file_name
 
     def download_file(self):
-        arquivo = requests.get(self._url,)
+        arquivo = requests.get(self._url, allow_redirects=True)
         open(self._file_name, 'wb').write(arquivo.content)
-        print('ATT: ver {0}'.format(self._file_name))
-        print('ARQ Existe : ', os.path.isfile(self._file_name))
-    
+        
+ 
 
 #Função para Download do arquivo xls
 def extract_xls_origin(path_bronze_zone, file_dest_name):
