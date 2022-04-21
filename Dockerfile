@@ -1,7 +1,8 @@
 FROM apache/airflow:2.2.3
 
 USER airflow
-RUN pip3 install openpyxl 
+RUN pip install openpyxl 
+RUN pip install fastparquet
 
 USER root
 RUN apt-get update && \

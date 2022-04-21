@@ -30,8 +30,6 @@ class Base_extraxt:
         arquivo = requests.get(self._url, allow_redirects=True)
         open(self._file_name, 'wb').write(arquivo.content)
         
- 
-
 #Função para Download do arquivo xls
 def extract_xls_origin(path_bronze_zone, file_dest_name):
     receiver = Base_extraxt()
