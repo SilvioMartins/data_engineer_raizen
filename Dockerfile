@@ -1,7 +1,7 @@
 FROM apache/airflow:2.2.3
 
 USER airflow
-RUN pip install openpyxl 
+RUN pip install dask 
 RUN pip install fastparquet
 
 USER root

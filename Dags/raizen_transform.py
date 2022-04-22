@@ -8,6 +8,7 @@
 #Importanndo Bibliotecas
 import pandas as pd
 import fastparquet
+import dask.dataframe as dd
 
 #Class Base_transform
 class Data_transform:
@@ -121,8 +122,11 @@ class Data_transform:
         #Ordena o indice do Dataframe Final
         df_final = df_final.sort_index()
 
+        #Convertendo para Datafram Dask
+        df_final = dd.from_pandas(df_final,npartitions=11)
+
         #Gera Parquet Final
-        df_final.to_parquet(self._file_dest, compression='snappy', partition_cols=['uf','product'])
+        df_final.to_parquet(self._file_dest, compression='snappy', partition_on=['uf','product'], overwrite=True)
 
         #Checa os dados de entrada e de saída, caso sejam diferentes gera excessão
         #Lendo Parquet Gravado
