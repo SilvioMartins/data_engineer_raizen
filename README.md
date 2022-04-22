@@ -21,14 +21,16 @@ Desenvolver um pipeline de dados, orquestrado, que extraia informações de uma 
 Executar os passos abaixo em ambiente Linux. exceutei a solução no WSL2:
 1. Criar o diretório airflow em home: 
     mkdir airfow
-2. Copiar os arquivos dockerfile, docker-compose.yaml e start.sh para o diretório airflow criado;
+2. Copiar os arquivos dockerfile, docker-compose.yaml, start.sh e todo diretório dags, deste repositório, para o diretório airflow criado;
 3. Acessar a pasta airflow e executar o arquivo star.sh
     sudo . /start.sh
-4. Ir no navegador e acessar a interfaxe web do airflow através do endereço:
+4. Nesse ponto acessar o container do web-server do airflow usando docker exec -it <id_container> bash, e instalar a biblioteca python fastparquet usando pip install fastparquet; 
+5. Ir no navegador e acessar a interfaxe web do airflow através do endereço:
         http://localhost:8080
-5. Acessar com USUÁRIO: airflow e SENHA: airflow, ir em DAGS, clicar em DAG´s e na DAG ETL_raizen e executá-la;
-6. Aguardar o fim do processamento e verificar as saídas geradas no data lake.
+6. Acessar com USUÁRIO: airflow e SENHA: airflow, ir em DAGS, clicar em DAG´s e na DAG ETL_raizen e executá-la;
+7. Aguardar o fim do processamento e verificar as saídas geradas no data lake.
         ./dags/data_lake
+8. Finalize o ambiente com docker-compose stop, para finalizar os containers
 
 ## Pontos de Melhoria
 1. Tratar o apontamento do data lake através de um arquivo .xml, tornando o processo mais flexível;
